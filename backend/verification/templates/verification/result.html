@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campus Asset Verification</title>
+    <style>
+        body { font-family: Arial; background-color: #f4f6f7; text-align: center; }
+        .card { background: white; width: 480px; margin: 50px auto; padding: 25px; border-radius: 10px; box-shadow: 0px 0px 10px gray; }
+        .authorized { color: green; font-size: 22px; font-weight: bold; }
+        .warning { color: red; font-size: 22px; font-weight: bold; }
+        .actions { margin-top: 20px; }
+        .btn { display: inline-block; margin: 5px; padding: 10px 15px; border: none; border-radius: 5px; color: white; text-decoration: none; cursor: pointer; }
+        .btn-approve { background-color: green; }
+        .btn-reject { background-color: red; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>Campus Asset Verification</h1>
+
+    {% if asset %}
+        <h2>{{ asset.asset_name }}</h2>
+        <p><b>Asset Code:</b> {{ asset.asset_code }}</p>
+        <p><b>Serial Number:</b> {{ asset.serial_number }}</p>
+        <p><b>Owner:</b> {{ asset.owner }}</p>
+        <p><b>Status:</b> {{ asset.status }}</p>
+
+        {% if asset.status == "AUTHORIZED" %}
+            <div class="authorized">✅ TEMPORARY EXIT ALLOWED</div>
+        {% else %}
+            <div class="warning">🚨 SECURITY REVIEW REQUIRED</div>
+        {% endif %}
+
+        {% if request_obj %}
+            <p><b>Exit Request Status:</b> {{ request_obj.get_status_display }}</p>
+            <div class="actions">
+                <a class="btn btn-approve" href="{% url 'approve_exit_request' request_obj.id %}">Approve Temporary Exit</a>
+                <a class="btn btn-reject" href="{% url 'reject_exit_request' request_obj.id %}">Reject Temporary Exit</a>
+            </div>
+        {% endif %}
+    {% else %}
+        <h2>❌ Asset Not Found</h2>
+    {% endif %}
+</div>
+</body>
+</html>

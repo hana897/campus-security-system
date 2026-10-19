@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+.page-title{
+    font-weight:700;
+    color:#0f172a;
+}
+
+.page-subtitle{
+    color:#64748b;
+}
+
+.form-card{
+    border:none;
+    border-radius:20px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+}
+
+.form-label{
+    font-weight:600;
+    color:#334155;
+    margin-bottom:8px;
+}
+
+.form-control,
+.form-select{
+    border-radius:12px;
+    padding:12px 15px;
+    border:1px solid #dbe3ec;
+}
+
+.form-control:focus,
+.form-select:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+}
+
+.card-header{
+    border-bottom:none;
+}
+
+.btn{
+    border-radius:12px;
+    padding:10px 22px;
+}
+
+.required{
+    color:#dc2626;
+}
+
+</style>
+
+<div class="container-fluid">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<div>
+
+<h2 class="page-title">
+
+{{ title }}
+
+</h2>
+
+<p class="page-subtitle">
+
+Enter the asset information below.
+
+</p>
+
+</div>
+
+<a href="{% url 'asset_list' %}" class="btn btn-light">
+
+<i class="bi bi-arrow-left"></i>
+
+Back
+
+</a>
+
+</div>
+
+<div class="card form-card">
+
+<div class="card-header bg-white py-3">
+
+<h5 class="fw-bold mb-0">
+
+<i class="bi bi-box-seam text-primary me-2"></i>
+
+Asset Information
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<div class="row">
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label">
+
+Asset Code
+
+<span class="required">*</span>
+
+</label>
+
+{{ form.asset_code }}
+
+{% if form.asset_code.errors %}
+<div class="text-danger small mt-1">
+{{ form.asset_code.errors }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label">
+
+Asset Name
+
+<span class="required">*</span>
+
+</label>
+
+{{ form.asset_name }}
+
+{% if form.asset_name.errors %}
+<div class="text-danger small mt-1">
+{{ form.asset_name.errors }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label">
+
+Serial Number
+
+</label>
+
+{{ form.serial_number }}
+
+{% if form.serial_number.errors %}
+<div class="text-danger small mt-1">
+{{ form.serial_number.errors }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label">
+
+Category
+
+</label>
+
+{{ form.category }}
+
+{% if form.category.errors %}
+<div class="text-danger small mt-1">
+{{ form.category.errors }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label">
+
+Owner
+
+</label>
+
+{{ form.owner }}
+
+{% if form.owner.errors %}
+<div class="text-danger small mt-1">
+{{ form.owner.errors }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label">
+
+Status
+
+</label>
+
+{{ form.status }}
+
+{% if form.status.errors %}
+<div class="text-danger small mt-1">
+{{ form.status.errors }}
+</div>
+{% endif %}
+
+</div>
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label">
+
+Purchase Date
+
+</label>
+
+{{ form.purchase_date }}
+
+{% if form.purchase_date.errors %}
+<div class="text-danger small mt-1">
+{{ form.purchase_date.errors }}
+</div>
+{% endif %}
+
+</div>
+
+</div>
+
+<hr>
+
+<div class="d-flex gap-2 justify-content-end">
+
+<a href="{% url 'asset_list' %}" class="btn btn-light">
+
+<i class="bi bi-x-circle"></i>
+
+Cancel
+
+</a>
+
+<button type="submit" class="btn btn-primary">
+
+<i class="bi bi-check-circle"></i>
+
+Save Asset
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

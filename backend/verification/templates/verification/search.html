@@ -1,0 +1,459 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+.page-title{
+    font-weight:700;
+    color:#0f172a;
+}
+
+.page-subtitle{
+    color:#64748b;
+}
+
+.verify-card{
+    border:none;
+    border-radius:20px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+}
+
+.nav-pills .nav-link{
+    border-radius:12px;
+    font-weight:600;
+    color:#475569;
+    padding:12px 20px;
+}
+
+.nav-pills .nav-link.active{
+    background:#2563eb;
+}
+
+.form-control,
+textarea,
+select{
+
+    border-radius:12px;
+    padding:12px 15px;
+
+}
+
+.form-control:focus,
+textarea:focus,
+select:focus{
+
+    border-color:#2563eb;
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+
+}
+
+.info-card{
+
+    border:none;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+
+}
+
+.info-item{
+
+    padding:14px 0;
+
+    border-bottom:1px solid #eef2f7;
+
+}
+
+.info-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.status{
+
+    padding:7px 16px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.status-authorized{
+
+    background:#dcfce7;
+    color:#166534;
+
+}
+
+.status-lost{
+
+    background:#fef3c7;
+    color:#92400e;
+
+}
+
+.status-stolen{
+
+    background:#fee2e2;
+    color:#991b1b;
+
+}
+
+.status-maintenance{
+
+    background:#dbeafe;
+    color:#1d4ed8;
+
+}
+
+</style>
+
+<div class="container-fluid">
+
+<div class="mb-4">
+
+<h2 class="page-title">
+
+Campus Asset Verification
+
+</h2>
+
+<p class="page-subtitle">
+
+Verify registered campus assets before allowing a temporary exit from the campus for security review.
+
+</p>
+
+</div>
+
+<div class="card verify-card">
+
+<div class="card-body">
+
+<ul class="nav nav-pills mb-4" id="verifyTabs">
+
+<li class="nav-item">
+
+<button
+class="nav-link active"
+id="manual-tab-btn"
+onclick="showTab('manual')"
+type="button">
+
+<i class="bi bi-keyboard me-2"></i>
+
+Enter Asset Code
+
+</button>
+
+</li>
+
+<li class="nav-item ms-2">
+
+<button
+class="nav-link"
+id="qr-tab-btn"
+onclick="showTab('qr')"
+type="button">
+
+<i class="bi bi-qr-code-scan me-2"></i>
+
+QR Code
+
+</button>
+
+</li>
+
+</ul>
+
+<div id="manual-tab">
+
+<form method="POST">
+
+{% csrf_token %}
+
+<div class="mb-3">
+
+<label class="form-label fw-semibold">
+
+Asset Code
+
+</label>
+
+<input
+type="text"
+name="search"
+class="form-control"
+placeholder="Enter Asset Code">
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label fw-semibold">
+
+Reason for Exit
+
+</label>
+
+{{ form.reason }}
+
+</div>
+
+<button class="btn btn-primary">
+
+<i class="bi bi-check-circle me-2"></i>
+
+Verify & Check Exit Request
+
+</button>
+
+</form>
+
+</div>
+
+<div id="qr-tab" style="display:none;">
+
+<form method="POST" action="{% url 'scan_qr' %}">
+
+{% csrf_token %}
+
+<div class="mb-3">
+
+<label class="form-label fw-semibold">
+
+QR Code
+
+</label>
+
+<input
+type="text"
+name="asset_code"
+class="form-control"
+placeholder="Scan or paste QR code">
+
+</div>
+
+<button class="btn btn-success">
+
+<i class="bi bi-qr-code-scan me-2"></i>
+
+Verify QR Exit Check
+
+</button>
+
+</form>
+
+</div>
+
+{% if message %}
+
+<div class="mt-4">
+
+{% if "Authorized" in message %}
+
+<div class="alert alert-success rounded-4">
+
+<i class="bi bi-check-circle-fill me-2"></i>
+
+{{ message }}
+
+</div>
+
+{% elif "Lost" in message or "Stolen" in message %}
+
+<div class="alert alert-danger rounded-4">
+
+<i class="bi bi-shield-fill-x me-2"></i>
+
+{{ message }}
+
+</div>
+
+{% else %}
+
+<div class="alert alert-warning rounded-4">
+
+<i class="bi bi-exclamation-circle-fill me-2"></i>
+
+{{ message }}
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+{% if asset %}
+
+<div class="card info-card mt-4">
+
+<div class="card-header bg-white border-0 py-3">
+
+<h5 class="fw-bold mb-0">
+
+<i class="bi bi-box-seam text-primary me-2"></i>
+
+Verified Asset Information
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<div class="info-item">
+
+<strong>Asset Name</strong>
+
+<div>{{ asset.asset_name }}</div>
+
+</div>
+
+<div class="info-item">
+
+<strong>Asset Code</strong>
+
+<div>{{ asset.asset_code }}</div>
+
+</div>
+
+<div class="info-item">
+
+<strong>Serial Number</strong>
+
+<div>{{ asset.serial_number }}</div>
+
+</div>
+
+</div>
+
+<div class="col-md-6">
+
+<div class="info-item">
+
+<strong>Owner</strong>
+
+<div>{{ asset.owner.full_name }}</div>
+
+</div>
+
+<div class="info-item">
+
+<strong>Department</strong>
+
+<div>{{ asset.owner.department }}</div>
+
+</div>
+
+<div class="info-item">
+
+<strong>Status</strong>
+
+<div>
+
+{% if asset.status == "AUTHORIZED" %}
+
+<span class="status status-authorized">
+
+<i class="bi bi-check-circle-fill me-1"></i>
+
+Authorized
+
+</span>
+
+{% elif asset.status == "LOST" %}
+
+<span class="status status-lost">
+
+<i class="bi bi-exclamation-triangle-fill me-1"></i>
+
+Lost
+
+</span>
+
+{% elif asset.status == "STOLEN" %}
+
+<span class="status status-stolen">
+
+<i class="bi bi-shield-fill-x me-1"></i>
+
+Stolen
+
+</span>
+
+{% else %}
+
+<span class="status status-maintenance">
+
+<i class="bi bi-tools me-1"></i>
+
+Maintenance
+
+</span>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<script>
+
+function showTab(tab){
+
+const manual=document.getElementById("manual-tab");
+const qr=document.getElementById("qr-tab");
+
+const manualBtn=document.getElementById("manual-tab-btn");
+const qrBtn=document.getElementById("qr-tab-btn");
+
+if(tab==="qr"){
+
+manual.style.display="none";
+qr.style.display="block";
+
+manualBtn.classList.remove("active");
+qrBtn.classList.add("active");
+
+}else{
+
+manual.style.display="block";
+qr.style.display="none";
+
+qrBtn.classList.remove("active");
+manualBtn.classList.add("active");
+
+}
+
+}
+
+</script>
+
+{% endblock %}

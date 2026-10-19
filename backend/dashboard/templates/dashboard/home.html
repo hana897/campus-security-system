@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+.stat-card{
+    border:none;
+    border-radius:20px;
+    color:white;
+    overflow:hidden;
+    transition:.3s;
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+}
+
+.stat-card:hover{
+    transform:translateY(-6px);
+}
+
+.gradient-blue{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+
+.gradient-green{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+}
+
+.gradient-orange{
+    background:linear-gradient(135deg,#f59e0b,#fbbf24);
+}
+
+.gradient-red{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+}
+
+.stat-icon{
+    font-size:42px;
+    opacity:.25;
+}
+
+.stat-number{
+    font-size:36px;
+    font-weight:700;
+}
+
+.table-card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+}
+
+.table thead{
+    background:#f8fafc;
+}
+
+.badge-authorized{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.badge-lost{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.badge-stolen{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+</style>
+
+<div class="container-fluid">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<div>
+<h2 class="fw-bold mb-1">
+Dashboard
+</h2>
+
+<p class="text-muted">
+Welcome to the Smart Campus Asset Verification System
+</p>
+
+</div>
+
+</div>
+
+<div class="row g-4">
+
+<div class="col-lg-3 col-md-6">
+
+<div class="card stat-card gradient-blue">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p class="mb-2">Total Assets</p>
+
+<div class="stat-number">
+{{ total_assets }}
+</div>
+
+</div>
+
+<i class="bi bi-box-seam stat-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6">
+
+<div class="card stat-card gradient-green">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p class="mb-2">Authorized</p>
+
+<div class="stat-number">
+{{ authorized_assets }}
+</div>
+
+</div>
+
+<i class="bi bi-check-circle stat-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6">
+
+<div class="card stat-card gradient-orange">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p class="mb-2">Lost Assets</p>
+
+<div class="stat-number">
+{{ lost_assets }}
+</div>
+
+</div>
+
+<i class="bi bi-exclamation-triangle stat-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6">
+
+<div class="card stat-card gradient-red">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p class="mb-2">Stolen Assets</p>
+
+<div class="stat-number">
+{{ stolen_assets }}
+</div>
+
+</div>
+
+<i class="bi bi-shield-x stat-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card table-card mt-5">
+
+<div class="card-header bg-white border-0 py-3">
+
+<h5 class="mb-0 fw-bold">
+Recent Asset Verifications
+</h5>
+
+</div>
+
+<div class="card-body p-0">
+
+<table class="table align-middle mb-0">
+
+<thead>
+
+<tr>
+
+<th>Asset</th>
+
+<th>Status</th>
+
+<th>Verified Date</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for log in recent_verifications %}
+
+<tr>
+
+<td class="fw-semibold">
+{{ log.asset.asset_name }}
+</td>
+
+<td>
+
+{% if log.asset.status == "Authorized" %}
+
+<span class="badge badge-authorized rounded-pill px-3 py-2">
+Authorized
+</span>
+
+{% elif log.asset.status == "Lost" %}
+
+<span class="badge badge-lost rounded-pill px-3 py-2">
+Lost
+</span>
+
+{% elif log.asset.status == "Stolen" %}
+
+<span class="badge badge-stolen rounded-pill px-3 py-2">
+Stolen
+</span>
+
+{% else %}
+
+<span class="badge bg-secondary rounded-pill px-3 py-2">
+{{ log.asset.status }}
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+{{ log.verified_at|date:"M d, Y H:i" }}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="3" class="text-center text-muted py-5">
+
+<i class="bi bi-inbox fs-1 d-block mb-2"></i>
+
+No verification history available.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

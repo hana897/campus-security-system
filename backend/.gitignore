@@ -1,0 +1,29 @@
+# Backend-only virtual environments
+venv/
+.venv/
+env/
+
+# Django local configuration and secrets
+.env
+.env.*
+!.env.example
+local_settings.py
+
+# Django runtime and generated files
+__pycache__/
+*.py[cod]
+*.log
+db.sqlite3*
+staticfiles/
+media/
+uploads/
+
+# Test and coverage output
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local task scheduler state
+celerybeat-schedule
+celerybeat.pid

@@ -1,0 +1,498 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+.page-title{
+    font-weight:700;
+    color:#0f172a;
+}
+
+.page-subtitle{
+    color:#64748b;
+}
+
+.report-card{
+    border:none;
+    border-radius:20px;
+    color:white;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.report-card:hover{
+    transform:translateY(-6px);
+}
+
+.card-icon{
+    font-size:42px;
+    opacity:.25;
+}
+
+.card-number{
+    font-size:36px;
+    font-weight:700;
+}
+
+.gradient-blue{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+
+.gradient-green{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+}
+
+.gradient-yellow{
+    background:linear-gradient(135deg,#d97706,#f59e0b);
+}
+
+.gradient-red{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+}
+
+.gradient-cyan{
+    background:linear-gradient(135deg,#0891b2,#06b6d4);
+}
+
+.gradient-dark{
+    background:linear-gradient(135deg,#1e293b,#334155);
+}
+
+.logs-card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+}
+
+.table thead{
+    background:#f8fafc;
+}
+
+.table th{
+    border:none;
+    color:#334155;
+    font-weight:600;
+}
+
+.table tbody tr:hover{
+    background:#f8fbff;
+}
+
+.status{
+
+    padding:7px 15px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.status-authorized{
+
+    background:#dcfce7;
+    color:#166534;
+
+}
+
+.status-lost{
+
+    background:#fef3c7;
+    color:#92400e;
+
+}
+
+.status-stolen{
+
+    background:#fee2e2;
+    color:#991b1b;
+
+}
+
+.status-maintenance{
+
+    background:#dbeafe;
+    color:#1d4ed8;
+
+}
+
+.empty-state{
+
+    padding:60px;
+
+    text-align:center;
+
+}
+
+.empty-state i{
+
+    font-size:70px;
+
+    color:#cbd5e1;
+
+}
+
+</style>
+
+<div class="container-fluid">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<div>
+
+<h2 class="page-title">
+
+Reports Dashboard
+
+</h2>
+
+<p class="page-subtitle">
+
+View asset statistics and verification reports.
+
+</p>
+
+</div>
+
+<a href="{% url 'reports_pdf' %}" class="btn btn-danger">
+
+<i class="bi bi-file-earmark-pdf me-2"></i>
+
+Download PDF
+
+</a>
+
+</div>
+
+<div class="row g-4">
+
+<div class="col-lg-4 col-md-6">
+
+<div class="card report-card gradient-blue">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p>Total Assets</p>
+
+<div class="card-number">
+
+{{ total_assets }}
+
+</div>
+
+</div>
+
+<i class="bi bi-box-seam card-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4 col-md-6">
+
+<div class="card report-card gradient-green">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p>Authorized</p>
+
+<div class="card-number">
+
+{{ authorized }}
+
+</div>
+
+</div>
+
+<i class="bi bi-check-circle card-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4 col-md-6">
+
+<div class="card report-card gradient-yellow">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p>Lost</p>
+
+<div class="card-number">
+
+{{ lost }}
+
+</div>
+
+</div>
+
+<i class="bi bi-exclamation-triangle card-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4 col-md-6">
+
+<div class="card report-card gradient-red">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p>Stolen</p>
+
+<div class="card-number">
+
+{{ stolen }}
+
+</div>
+
+</div>
+
+<i class="bi bi-shield-fill-x card-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4 col-md-6">
+
+<div class="card report-card gradient-cyan">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p>Maintenance</p>
+
+<div class="card-number">
+
+{{ maintenance }}
+
+</div>
+
+</div>
+
+<i class="bi bi-tools card-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4 col-md-6">
+
+<div class="card report-card gradient-dark">
+
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<p>Total Verifications</p>
+
+<div class="card-number">
+
+{{ total_verifications }}
+
+</div>
+
+</div>
+
+<i class="bi bi-clock-history card-icon"></i>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card logs-card mt-5">
+
+<div class="card-header bg-white border-0 py-3">
+
+<h5 class="fw-bold mb-0">
+
+<i class="bi bi-journal-check text-primary me-2"></i>
+
+Latest Verification Logs
+
+</h5>
+
+</div>
+
+<div class="table-responsive">
+
+<table class="table align-middle mb-0">
+
+<thead>
+
+<tr>
+
+<th>Date & Time</th>
+
+<th>Asset</th>
+
+<th>Asset Code</th>
+
+<th>Owner</th>
+
+<th>Status</th>
+
+<th>Verified By</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for log in verification_logs %}
+
+<tr>
+
+<td>
+
+<i class="bi bi-calendar-event text-primary me-2"></i>
+
+{{ log.verified_at|date:"M d, Y H:i" }}
+
+</td>
+
+<td>
+
+<strong>{{ log.asset.asset_name }}</strong>
+
+</td>
+
+<td>
+
+{{ log.asset.asset_code }}
+
+</td>
+
+<td>
+
+{{ log.asset.owner }}
+
+</td>
+
+<td>
+
+{% if log.asset.status == "AUTHORIZED" %}
+
+<span class="status status-authorized">
+
+<i class="bi bi-check-circle-fill me-1"></i>
+
+Authorized
+
+</span>
+
+{% elif log.asset.status == "LOST" %}
+
+<span class="status status-lost">
+
+<i class="bi bi-exclamation-triangle-fill me-1"></i>
+
+Lost
+
+</span>
+
+{% elif log.asset.status == "STOLEN" %}
+
+<span class="status status-stolen">
+
+<i class="bi bi-shield-fill-x me-1"></i>
+
+Stolen
+
+</span>
+
+{% else %}
+
+<span class="status status-maintenance">
+
+<i class="bi bi-tools me-1"></i>
+
+Maintenance
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+<i class="bi bi-person-badge me-2 text-primary"></i>
+
+{{ log.officer }}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="6">
+
+<div class="empty-state">
+
+<i class="bi bi-journal-x"></i>
+
+<h4 class="mt-3">
+
+No Verification Records
+
+</h4>
+
+<p class="text-muted">
+
+Verification logs will appear here once assets are verified.
+
+</p>
+
+</div>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

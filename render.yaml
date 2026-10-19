@@ -1,0 +1,47 @@
+# Render Blueprint: Postgres database + Django API + React static site.
+databases:
+  - name: campus-security-db
+    plan: free
+    databaseName: campus_securitydb
+    user: campus_security
+
+services:
+  - type: web
+    name: campus-security-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: PGDATABASE
+        fromDatabase: { name: campus-security-db, property: database }
+      - key: PGUSER
+        fromDatabase: { name: campus-security-db, property: user }
+      - key: PGPASSWORD
+        fromDatabase: { name: campus-security-db, property: password }
+      - key: PGHOST
+        fromDatabase: { name: campus-security-db, property: host }
+      - key: PGPORT
+        fromDatabase: { name: campus-security-db, property: port }
+
+  - type: web
+    name: campus-security-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      # Change this if Render gives the API a different URL.
+      - key: VITE_API_BASE_URL
+        value: https://campus-security-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
